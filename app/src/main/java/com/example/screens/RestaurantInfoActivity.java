@@ -15,7 +15,7 @@ public class RestaurantInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant_info);
 
-        // Initialize UI elements
+        // Initialize UI
         EditText restaurantName = findViewById(R.id.etRestaurantName);
         EditText restaurantAddress = findViewById(R.id.etRestaurantAddress);
         EditText restaurantNotes = findViewById(R.id.etRestaurantNotes);

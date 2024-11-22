@@ -53,7 +53,7 @@ public class RestaurantCreationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant_creation);
 
-        // Initialize UI components
+        // Initialize UI
         etRestaurantName = findViewById(R.id.etRestaurantName);
         etRestaurantAddress = findViewById(R.id.etRestaurantAddress);
         etRestaurantNotes = findViewById(R.id.etRestaurantNotes);
