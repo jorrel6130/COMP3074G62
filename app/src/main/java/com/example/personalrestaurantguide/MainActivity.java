@@ -19,8 +19,6 @@ public class MainActivity extends AppCompatActivity implements RestaurantInterfa
 
     int restaurantImage = R.drawable.rest_symbol;
 
-    String[] restaurantTags = getResources().getStringArray(R.array.placeholder_tags);
-
     int restaurantRating = 0;
 
     @Override
@@ -48,7 +46,8 @@ public class MainActivity extends AppCompatActivity implements RestaurantInterfa
 
     private void setUpRestaurantModels() {
         String[] restaurantNames = getResources().getStringArray(R.array.restaurant_names);
-        String[] restaurantDescriptions = getResources().getStringArray(R.array.restaurant_names); // Placeholder; I didn't want to write 10 descriptions
+        String[] restaurantDescriptions = getResources().getStringArray(R.array.restaurant_names);// Placeholder; I didn't want to write 10 descriptions
+        String[] restaurantTags = getResources().getStringArray(R.array.placeholder_tags);
 
         for (int i = 0; i < restaurantNames.length; i++) {
             restaurantModels.add(new RestaurantModel(restaurantNames[i], restaurantImage, restaurantDescriptions[i], restaurantTags, restaurantRating));
