@@ -21,6 +21,8 @@ public class MainActivity extends AppCompatActivity implements RestaurantInterfa
 
     int restaurantRating = 0;
 
+    String restaurantAddress = "Placeholder";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,19 +52,20 @@ public class MainActivity extends AppCompatActivity implements RestaurantInterfa
         String[] restaurantTags = getResources().getStringArray(R.array.placeholder_tags);
 
         for (int i = 0; i < restaurantNames.length; i++) {
-            restaurantModels.add(new RestaurantModel(restaurantNames[i], restaurantImage, restaurantDescriptions[i], restaurantTags, restaurantRating));
+            restaurantModels.add(new RestaurantModel(restaurantNames[i], restaurantImage, restaurantAddress, restaurantDescriptions[i], restaurantTags, restaurantRating));
         }
     }
 
     @Override
     public void onItemClick(int position) {
-        /*
-        Intent intent = new Intent(MainActivity.this, FullPageActivity.class);
+        Intent intent = new Intent(MainActivity.this, RestaurantInfoActivity.class);
 
-        intent.putExtra("NAME", restaurantModels.get(position).getRestaurantModels().getRestaurantName());
-        intent.putExtra("DESCRIPTION", restaurantModels.get(position).getRestaurantModels().getRestaurantDescription());
-        intent.putExtra("DESCRIPTION", restaurantModels.get(position).getRestaurantModels().getRestaurantTags());
-        intent.putExtra("DESCRIPTION", restaurantModels.get(position).getRestaurantModels().getRestaurantRating());
-        */
+        intent.putExtra("name", restaurantModels.get(position).getRestaurantName());
+        intent.putExtra("address", restaurantModels.get(position).getRestaurantDescription());
+        intent.putExtra("notes", restaurantModels.get(position).getRestaurantDescription());
+        intent.putExtra("tags", restaurantModels.get(position).getRestaurantTags());
+        intent.putExtra("rating", restaurantModels.get(position).getRestaurantRating());
+
+        startActivity(intent);
     }
 }

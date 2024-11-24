@@ -3,6 +3,10 @@
 
     <string name="placeholder_restaurant">Placeholder Restaurant</string>
 
+    <string name="hint_restaurant_name">Restaurant Name</string>
+    <string name="hint_address">Address</string>
+    <string name="hint_notes">Notes</string>
+
     <string-array name="restaurant_names">
         <item>PAI</item>
         <item>Canoe</item>

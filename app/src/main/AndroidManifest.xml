@@ -12,6 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PersonalRestaurantGuide"
         tools:targetApi="31">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAPR_ZNIlI5rt30i6vGz0uVM8lwhQM1OBo" />
+
         <activity
             android:name=".MainActivity"
             android:exported="false" />
@@ -30,6 +35,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".RestaurantCreationActivity"
+            android:exported="true" />
+        <activity
+            android:name=".RestaurantInfoActivity"
+            android:exported="true">
+        </activity>
+
     </application>
+
+    <!-- Permissions -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>

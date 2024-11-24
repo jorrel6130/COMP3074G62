@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <ImageButton
+        android:id="@+id/btnBack"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@android:drawable/ic_menu_revert"
+        android:contentDescription="Back Button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/btnSave"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@android:drawable/ic_menu_save"
+        android:contentDescription="Save Button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/etRestaurantName"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:hint="Restaurant Name"
+        android:inputType="textPersonName"
+        app:layout_constraintTop_toBottomOf="@id/btnBack"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <EditText
+        android:id="@+id/etRestaurantAddress"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:hint="Address"
+        android:inputType="textPostalAddress"
+        app:layout_constraintTop_toBottomOf="@id/etRestaurantName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/btnUseCurrentLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Use Current Location"
+        app:layout_constraintTop_toBottomOf="@id/etRestaurantAddress"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/etRestaurantNotes"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:hint="Notes"
+        android:inputType="textMultiLine"
+        android:lines="3"
+        app:layout_constraintTop_toBottomOf="@id/btnUseCurrentLocation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <EditText
+        android:id="@+id/etRestaurantTags"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:hint="Tags"
+        android:inputType="text"
+        app:layout_constraintTop_toBottomOf="@id/etRestaurantNotes"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <RatingBar
+        android:id="@+id/rbRestaurantRating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numStars="5"
+        android:stepSize="0.5"
+        app:layout_constraintTop_toBottomOf="@id/etRestaurantTags"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btnChooseImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Choose Image"
+        app:layout_constraintTop_toBottomOf="@id/rbRestaurantRating"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btnUseGoogleImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Use Google Image"
+        app:layout_constraintTop_toBottomOf="@id/rbRestaurantRating"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
