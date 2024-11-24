@@ -1,10 +1,17 @@
 package com.example.personalrestaurantguide;
 
 import android.content.Intent;
+import android.health.connect.datatypes.AppInfo;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -22,6 +29,8 @@ public class MainActivity extends AppCompatActivity implements RestaurantInterfa
     int restaurantRating = 0;
 
     String restaurantAddress = "Placeholder";
+
+    private Toolbar navbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +53,9 @@ public class MainActivity extends AppCompatActivity implements RestaurantInterfa
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        navbar = findViewById(R.id.navbar);
+        setSupportActionBar(navbar);
     }
 
     private void setUpRestaurantModels() {
@@ -67,5 +79,19 @@ public class MainActivity extends AppCompatActivity implements RestaurantInterfa
         intent.putExtra("rating", restaurantModels.get(position).getRestaurantRating());
 
         startActivity(intent);
+    }
+
+    public boolean onCreateOptionsMenu (Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected (@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.add_icon) {
+            Intent intent = new Intent(this, RestaurantCreationActivity.class);
+            startActivity(intent);
+        }
+        return true;
     }
 }
