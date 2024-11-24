@@ -1,3 +1,6 @@
+// Kevin Bhangu
+// 101418717
+
 package com.example.personalrestaurantguide;
 
 import android.content.Intent;
