@@ -1,8 +1,10 @@
 package com.example.personalrestaurantguide;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.health.connect.datatypes.AppInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -10,6 +12,7 @@ import android.view.MenuItem;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
@@ -22,15 +25,9 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements RestaurantInterface {
 
-    ArrayList<RestaurantModel> restaurantModels = new ArrayList<>();
-
-    int restaurantImage = R.drawable.rest_symbol;
-
-    int restaurantRating = 0;
-
-    String restaurantAddress = "Placeholder";
-
-    private Toolbar navbar;
+    ArrayList<RestaurantModel> restaurantModels;
+    RestaurantViewAdapter adapter;
+    AlertDialog.Builder builder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,11 +35,14 @@ public class MainActivity extends AppCompatActivity implements RestaurantInterfa
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        RecyclerView recyclerView = findViewById(R.id.restaurantRecyclerView);
+        RecyclerView recyclerView  = findViewById(R.id.restaurantRecyclerView);
 
-        setUpRestaurantModels();
+        restaurantModels = PrefConfig.readListFromPref(this);
+        if (restaurantModels == null) {
+            restaurantModels = new ArrayList<>();
+        }
 
-        RestaurantViewAdapter adapter = new RestaurantViewAdapter(this, restaurantModels, this);
+        adapter = new RestaurantViewAdapter(this, restaurantModels, this);
 
         recyclerView.setAdapter(adapter);
 
@@ -54,31 +54,40 @@ public class MainActivity extends AppCompatActivity implements RestaurantInterfa
             return insets;
         });
 
-        navbar = findViewById(R.id.navbar);
+        Toolbar navbar = findViewById(R.id.navbar);
         setSupportActionBar(navbar);
-    }
 
-    private void setUpRestaurantModels() {
-        String[] restaurantNames = getResources().getStringArray(R.array.restaurant_names);
-        String[] restaurantDescriptions = getResources().getStringArray(R.array.restaurant_names);// Placeholder; I didn't want to write 10 descriptions
-        String[] restaurantTags = getResources().getStringArray(R.array.placeholder_tags);
-
-        for (int i = 0; i < restaurantNames.length; i++) {
-            restaurantModels.add(new RestaurantModel(restaurantNames[i], restaurantImage, restaurantAddress, restaurantDescriptions[i], restaurantTags, restaurantRating));
-        }
+        builder = new AlertDialog.Builder(this);
     }
 
     @Override
     public void onItemClick(int position) {
         Intent intent = new Intent(MainActivity.this, RestaurantInfoActivity.class);
-
-        intent.putExtra("name", restaurantModels.get(position).getRestaurantName());
-        intent.putExtra("address", restaurantModels.get(position).getRestaurantDescription());
-        intent.putExtra("notes", restaurantModels.get(position).getRestaurantDescription());
-        intent.putExtra("tags", restaurantModels.get(position).getRestaurantTags());
-        intent.putExtra("rating", restaurantModels.get(position).getRestaurantRating());
-
+        intent.putExtra("position", position);
         startActivity(intent);
+    }
+
+    @Override
+    public void onItemLongClick(int position) {
+        String restName = restaurantModels.get(position).getName();
+        builder.setTitle("Delete")
+                .setMessage("Do you want to delete " + restName + "?")
+                .setCancelable(true)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        restaurantModels.remove(position);
+                        PrefConfig.writeListInPref(getApplicationContext(), restaurantModels);
+                        adapter.notifyItemRemoved(position);
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                })
+                .show();
     }
 
     public boolean onCreateOptionsMenu (Menu menu) {

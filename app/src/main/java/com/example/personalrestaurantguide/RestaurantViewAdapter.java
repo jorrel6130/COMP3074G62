@@ -37,7 +37,7 @@ public class RestaurantViewAdapter extends RecyclerView.Adapter<RestaurantViewAd
     public void onBindViewHolder(@NonNull RestaurantViewAdapter.MyViewHolder holder, int position) {
 
         holder.imageView.setImageResource(restaurantModels.get(position).getImage());
-        holder.restaurantName.setText(restaurantModels.get(position).getRestaurantName());
+        holder.restaurantName.setText(restaurantModels.get(position).getName());
     }
 
     @Override
@@ -65,6 +65,20 @@ public class RestaurantViewAdapter extends RecyclerView.Adapter<RestaurantViewAd
                             restaurantInterface.onItemClick(position);
                         }
                     }
+                }
+            });
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    if (restaurantInterface != null) {
+                        int position = getAdapterPosition();
+
+                        if (position != RecyclerView.NO_POSITION) {
+                            restaurantInterface.onItemLongClick(position);
+                        }
+                    }
+                    return true;
                 }
             });
         }

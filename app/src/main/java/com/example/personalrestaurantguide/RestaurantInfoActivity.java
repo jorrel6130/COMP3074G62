@@ -5,43 +5,98 @@ import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RatingBar;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.ArrayList;
+
 public class RestaurantInfoActivity extends AppCompatActivity {
+
+    private ArrayList<RestaurantModel> restaurantModels;
+    RestaurantModel currentRestaurant;
+    int position;
+    String name;
+    String address;
+    String description;
+    float rating;
+
+    EditText restaurantName;
+    EditText restaurantAddress;
+    EditText restaurantNotes;
+    RatingBar restaurantRating;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant_info);
 
-        // Initialize UI
-        EditText restaurantName = findViewById(R.id.etRestaurantName);
-        EditText restaurantAddress = findViewById(R.id.etRestaurantAddress);
-        EditText restaurantNotes = findViewById(R.id.etRestaurantNotes);
-        RatingBar restaurantRating = findViewById(R.id.rbRestaurantRating);
-        ImageButton backButton = findViewById(R.id.btnBack);
-        ImageButton shareButton = findViewById(R.id.btnShare);
-
+        restaurantModels = PrefConfig.readListFromPref(this);
 
         Intent intent = getIntent();
-        restaurantName.setText(intent.getStringExtra("name"));
-        restaurantAddress.setText(intent.getStringExtra("address"));
-        restaurantNotes.setText(intent.getStringExtra("notes"));
-        restaurantRating.setRating(intent.getFloatExtra("rating", 0));
+        position = intent.getIntExtra("position", 0);
+        currentRestaurant = restaurantModels.get(position);
+
+        name = currentRestaurant.getName();
+        address = currentRestaurant.getAddress();
+        description = currentRestaurant.getDescription();
+        rating = currentRestaurant.getRating();
+
+        // Initialize UI
+        restaurantName = findViewById(R.id.etRestaurantName);
+        restaurantAddress = findViewById(R.id.etRestaurantAddress);
+        restaurantNotes = findViewById(R.id.etRestaurantNotes);
+        restaurantRating = findViewById(R.id.rbRestaurantRating);
+        ImageButton backButton = findViewById(R.id.btnBack);
+        ImageButton btnSave = findViewById(R.id.btnSave);
+        ImageButton shareButton = findViewById(R.id.btnShare);
+
+        restaurantName.setText(name);
+        restaurantAddress.setText(address);
+        restaurantNotes.setText(description);
+        restaurantRating.setRating(rating);
 
         backButton.setOnClickListener(v -> finish());
 
+        btnSave.setOnClickListener(v -> saveRestaurantDetails());
+
         shareButton.setOnClickListener(v -> {
             String shareContent = "Check out this restaurant: " +
-                    restaurantName.getText().toString() + "\n" +
-                    "Address: " + restaurantAddress.getText().toString() + "\n" +
-                    "Notes: " + restaurantNotes.getText().toString() + "\n" +
-                    "Rating: " + restaurantRating.getRating();
+                    name + "\n" +
+                    "Address: " + address + "\n" +
+                    "Notes: " + description + "\n" +
+                    "Rating: " + rating;
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.setType("text/plain");
             shareIntent.putExtra(Intent.EXTRA_TEXT, shareContent);
             startActivity(Intent.createChooser(shareIntent, "Share via"));
         });
+    }
+
+    private void saveRestaurantDetails() {
+
+        if (name.isEmpty() || address.isEmpty()) {
+            Toast.makeText(this, "Name and Address cannot be empty", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        name = restaurantName.getText().toString();
+        description = restaurantNotes.getText().toString();
+        address = restaurantAddress.getText().toString();
+        rating = restaurantRating.getRating();
+
+        currentRestaurant.setName(name);
+        currentRestaurant.setDescription(description);
+        currentRestaurant.setAddress(address);
+        currentRestaurant.setRating(rating);
+
+        restaurantModels.set(position, currentRestaurant);
+
+        PrefConfig.writeListInPref(getApplicationContext(), restaurantModels);
+
+        Toast.makeText(RestaurantInfoActivity.this, ("Changes to " + name + " saved!"), Toast.LENGTH_SHORT).show();
+        Intent resultIntent = new Intent(RestaurantInfoActivity.this, MainActivity.class);
+        startActivity(resultIntent);
+        finish();
     }
 }

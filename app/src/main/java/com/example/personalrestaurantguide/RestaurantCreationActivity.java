@@ -24,6 +24,7 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,6 +35,9 @@ public class RestaurantCreationActivity extends AppCompatActivity {
     private EditText etRestaurantName, etRestaurantAddress, etRestaurantNotes, etRestaurantTags;
     private RatingBar rbRestaurantRating;
     private FusedLocationProviderClient fusedLocationClient;
+
+    private ArrayList<RestaurantModel> restaurantModels;
+    int restaurantImage = R.drawable.rest_symbol;
 
     private final ActivityResultLauncher<Intent> autocompleteLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -52,6 +56,11 @@ public class RestaurantCreationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant_creation);
+
+        restaurantModels = PrefConfig.readListFromPref(this);
+        if (restaurantModels == null) {
+            restaurantModels = new ArrayList<>();
+        }
 
         // Initialize UI
         etRestaurantName = findViewById(R.id.etRestaurantName);
@@ -104,13 +113,13 @@ public class RestaurantCreationActivity extends AppCompatActivity {
             return;
         }
 
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra("name", name);
-        resultIntent.putExtra("address", address);
-        resultIntent.putExtra("notes", notes);
-        resultIntent.putExtra("tags", tags);
-        resultIntent.putExtra("rating", rating);
-        setResult(RESULT_OK, resultIntent);
+        RestaurantModel restaurantModel = new RestaurantModel(name, restaurantImage, address, notes, tags, rating);
+        restaurantModels.add(restaurantModel);
+        PrefConfig.writeListInPref(getApplicationContext(), restaurantModels);
+
+        Toast.makeText(RestaurantCreationActivity.this, (name + " successfully added!"), Toast.LENGTH_SHORT).show();
+        Intent resultIntent = new Intent(RestaurantCreationActivity.this, MainActivity.class);
+        startActivity(resultIntent);
         finish();
     }
 
