@@ -9,12 +9,12 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.List;
 
 public class PrefConfig {
 
     private static final String LIST_KEY = "list_key";
 
+    // Call this function to write restaurant list into SharedPreferences
     public static void writeListInPref(Context context, ArrayList<RestaurantModel> list) {
         Gson gson = new Gson();
         String jsonString = gson.toJson(list);
@@ -25,6 +25,7 @@ public class PrefConfig {
         editor.apply();
     }
 
+    // Call this function to read restaurant list
     public static ArrayList<RestaurantModel> readListFromPref(Context context) {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
         String jsonString = pref.getString(LIST_KEY, "");

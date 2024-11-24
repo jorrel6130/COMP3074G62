@@ -31,8 +31,10 @@ public class RestaurantInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant_info);
 
+        // Pull restaurant list from SharedPrefs
         restaurantModels = PrefConfig.readListFromPref(this);
 
+        // Sets "current restaurant" to the one in the list position provided by the intent
         Intent intent = getIntent();
         position = intent.getIntExtra("position", 0);
         currentRestaurant = restaurantModels.get(position);
@@ -85,13 +87,16 @@ public class RestaurantInfoActivity extends AppCompatActivity {
         address = restaurantAddress.getText().toString();
         rating = restaurantRating.getRating();
 
+        // Sets current restaurants details to what was inputted in the EditText fields
         currentRestaurant.setName(name);
         currentRestaurant.setDescription(description);
         currentRestaurant.setAddress(address);
         currentRestaurant.setRating(rating);
 
+        // Replaces old current restaurant with modified current restaurant
         restaurantModels.set(position, currentRestaurant);
 
+        // Writes newly modified list into SharedPrefs
         PrefConfig.writeListInPref(getApplicationContext(), restaurantModels);
 
         Toast.makeText(RestaurantInfoActivity.this, ("Changes to " + name + " saved!"), Toast.LENGTH_SHORT).show();

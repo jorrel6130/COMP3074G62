@@ -57,6 +57,7 @@ public class RestaurantCreationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant_creation);
 
+        // Pull restaurant list from SharedPrefs; if none exists then a new one is made.
         restaurantModels = PrefConfig.readListFromPref(this);
         if (restaurantModels == null) {
             restaurantModels = new ArrayList<>();
@@ -79,9 +80,7 @@ public class RestaurantCreationActivity extends AppCompatActivity {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         btnBack.setOnClickListener(v -> finish());
-
         btnSave.setOnClickListener(v -> saveRestaurantDetails());
-
         btnUseCurrentLocation.setOnClickListener(v -> requestLocationPermission());
 
         ActivityResultLauncher<Intent> imagePickerLauncher = registerForActivityResult(
@@ -113,6 +112,7 @@ public class RestaurantCreationActivity extends AppCompatActivity {
             return;
         }
 
+        // Writes newly modified list into SharedPrefs
         RestaurantModel restaurantModel = new RestaurantModel(name, restaurantImage, address, notes, tags, rating);
         restaurantModels.add(restaurantModel);
         PrefConfig.writeListInPref(getApplicationContext(), restaurantModels);
