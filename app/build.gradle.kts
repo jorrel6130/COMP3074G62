@@ -39,6 +39,7 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.play.services.location)
     implementation(libs.places)
+    implementation("com.google.android.libraries.places:places:2.2.0")
     implementation("com.google.code.gson:gson:2.8.5")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
