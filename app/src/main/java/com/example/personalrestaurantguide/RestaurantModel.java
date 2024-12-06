@@ -1,11 +1,14 @@
 package com.example.personalrestaurantguide;
 
+import java.util.ArrayList;
+
 public class RestaurantModel {
     String RestaurantName;
     int image;
     String RestaurantAddress;
     String RestaurantDescription;
     String RestaurantTags;
+    ArrayList<String> test;
     float RestaurantRating;
 
 

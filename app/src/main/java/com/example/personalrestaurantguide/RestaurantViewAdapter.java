@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class RestaurantViewAdapter extends RecyclerView.Adapter<RestaurantViewAdapter.MyViewHolder>{
     private final RestaurantInterface restaurantInterface;
@@ -85,5 +86,10 @@ public class RestaurantViewAdapter extends RecyclerView.Adapter<RestaurantViewAd
                 }
             });
         }
+    }
+
+    public void setFilteredList(ArrayList<RestaurantModel> filteredList) {
+        this.restaurantModels = filteredList;
+        notifyDataSetChanged();
     }
 }

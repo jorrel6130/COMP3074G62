@@ -19,7 +19,9 @@
 
         <activity
             android:name=".MainActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan"
+            android:fitsSystemWindows="true" />
         <activity
             android:name=".SignUp"
             android:exported="false" />

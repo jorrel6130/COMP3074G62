@@ -14,6 +14,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements RestaurantInterfa
     ArrayList<RestaurantModel> restaurantModels;
     RestaurantViewAdapter adapter;
     AlertDialog.Builder builder;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +50,22 @@ public class MainActivity extends AppCompatActivity implements RestaurantInterfa
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        // Setting up SearchView
+        searchView = findViewById(R.id.searchView);
+        searchView.clearFocus();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filterList(newText);
+                return true;
+            }
+        });
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -60,6 +78,17 @@ public class MainActivity extends AppCompatActivity implements RestaurantInterfa
 
         // Instantiating AlertDialog builder for delete function
         builder = new AlertDialog.Builder(this);
+    }
+
+    private void filterList(String newText) {
+        ArrayList<RestaurantModel> filteredList = new ArrayList<>();
+        for (RestaurantModel restaurantModel : restaurantModels) {
+            if (restaurantModel.getName().toLowerCase().contains(newText.toLowerCase())) {
+                filteredList.add(restaurantModel);
+            }
+        }
+
+        adapter.setFilteredList(filteredList);
     }
 
     // Tapping one of the restaurant cards will open their info screen
