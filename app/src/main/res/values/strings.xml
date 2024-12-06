@@ -5,22 +5,10 @@
 
     <string name="hint_restaurant_name">Restaurant Name</string>
     <string name="hint_address">Address</string>
-    <string name="hint_notes">Notes</string>/
+    <string name="hint_notes">Notes</string>
+    <string name="hint_tags">Tags (Separate By Commas)</string>
 
     <string name="add_button">Add Restaurant</string>
-
-    <string-array name="restaurant_names">
-        <item>PAI</item>
-        <item>Canoe</item>
-        <item>Black+Blue</item>
-        <item>Swiss Chalet</item>
-        <item>Popeyes</item>
-        <item>McDonalds</item>
-        <item>Wendys</item>
-        <item>Burger King</item>
-        <item>Red Rocket</item>
-        <item>Krusty Krab</item>
-    </string-array>
 
     <string-array name="placeholder_tags">
         <item>Tags1</item>

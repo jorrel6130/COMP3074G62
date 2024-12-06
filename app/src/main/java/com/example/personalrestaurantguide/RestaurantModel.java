@@ -7,12 +7,12 @@ public class RestaurantModel {
     int image;
     String RestaurantAddress;
     String RestaurantDescription;
-    String RestaurantTags;
+    String[] RestaurantTags;
     ArrayList<String> test;
     float RestaurantRating;
 
 
-    public RestaurantModel(String restaurantName, int image, String restaurantAddress, String restaurantDescription, String restaurantTags, float restaurantRating) {
+    public RestaurantModel(String restaurantName, int image, String restaurantAddress, String restaurantDescription, String[] restaurantTags, float restaurantRating) {
         RestaurantName = restaurantName;
         this.image = image;
         this.RestaurantAddress = restaurantAddress;
@@ -33,7 +33,7 @@ public class RestaurantModel {
         return RestaurantDescription;
     }
 
-    public String getTags() {
+    public String[] getTags() {
         return RestaurantTags;
     }
 
@@ -61,7 +61,7 @@ public class RestaurantModel {
         RestaurantDescription = restaurantDescription;
     }
 
-    public void setTags(String restaurantTags) {
+    public void setTags(String[] restaurantTags) {
         RestaurantTags = restaurantTags;
     }
 

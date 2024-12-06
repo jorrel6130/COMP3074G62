@@ -107,7 +107,7 @@ public class RestaurantCreationActivity extends AppCompatActivity {
         String name = etRestaurantName.getText().toString();
         String address = etRestaurantAddress.getText().toString();
         String notes = etRestaurantNotes.getText().toString();
-        String tags = etRestaurantTags.getText().toString();
+        String[] tags = etRestaurantTags.getText().toString().trim().split("\\s*,\\s*");
         float rating = rbRestaurantRating.getRating();
 
         if (name.isEmpty() || address.isEmpty()) {

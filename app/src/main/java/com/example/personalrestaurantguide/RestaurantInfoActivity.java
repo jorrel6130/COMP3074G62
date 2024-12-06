@@ -22,11 +22,13 @@ public class RestaurantInfoActivity extends AppCompatActivity {
     String name;
     String address;
     String description;
+    String[] tags;
     float rating;
 
     EditText restaurantName;
     EditText restaurantAddress;
     EditText restaurantNotes;
+    EditText restaurantTags;
     RatingBar restaurantRating;
 
     @Override
@@ -45,20 +47,34 @@ public class RestaurantInfoActivity extends AppCompatActivity {
         name = currentRestaurant.getName();
         address = currentRestaurant.getAddress();
         description = currentRestaurant.getDescription();
+        tags = currentRestaurant.getTags();
         rating = currentRestaurant.getRating();
 
         // Initialize UI
         restaurantName = findViewById(R.id.etRestaurantName);
         restaurantAddress = findViewById(R.id.etRestaurantAddress);
         restaurantNotes = findViewById(R.id.etRestaurantNotes);
+        restaurantTags = findViewById(R.id.etRestaurantTags2);
         restaurantRating = findViewById(R.id.rbRestaurantRating);
         ImageButton backButton = findViewById(R.id.btnBack);
         ImageButton btnSave = findViewById(R.id.btnSave);
         ImageButton shareButton = findViewById(R.id.btnShare);
 
+        // Turning tags array into a single string
+        String tagString = "";
+        for (String tag : tags) {
+            if (tag == tags[tags.length - 1]) {
+                tagString += tag;
+            } else {
+                tagString = tagString + tag + ", ";
+            }
+        }
+
+        // Setting text fields using restaurant values
         restaurantName.setText(name);
         restaurantAddress.setText(address);
         restaurantNotes.setText(description);
+        restaurantTags.setText(tagString);
         restaurantRating.setRating(rating);
 
         backButton.setOnClickListener(v -> finish());
@@ -88,6 +104,7 @@ public class RestaurantInfoActivity extends AppCompatActivity {
         name = restaurantName.getText().toString();
         description = restaurantNotes.getText().toString();
         address = restaurantAddress.getText().toString();
+        tags = restaurantAddress.getText().toString().trim().split("\\s*,\\s*");
         rating = restaurantRating.getRating();
 
         // Sets current restaurants details to what was inputted in the EditText fields

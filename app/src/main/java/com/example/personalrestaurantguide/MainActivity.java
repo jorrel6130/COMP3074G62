@@ -81,10 +81,17 @@ public class MainActivity extends AppCompatActivity implements RestaurantInterfa
     }
 
     private void filterList(String newText) {
+        newText = newText.trim();
         ArrayList<RestaurantModel> filteredList = new ArrayList<>();
         for (RestaurantModel restaurantModel : restaurantModels) {
-            if (restaurantModel.getName().toLowerCase().contains(newText.toLowerCase())) {
+            if (restaurantModel.getName().trim().toLowerCase().contains(newText.toLowerCase())) {
                 filteredList.add(restaurantModel);
+                continue;
+            }
+            for (String tagQuery : restaurantModel.getTags()) {
+                if (tagQuery.trim().toLowerCase().contains(newText.toLowerCase())) {
+                    filteredList.add(restaurantModel);
+                }
             }
         }
 
