@@ -116,7 +116,7 @@ public class RestaurantCreationActivity extends AppCompatActivity {
         }
 
         // Writes newly modified list into SharedPrefs
-        RestaurantModel restaurantModel = new RestaurantModel(name, restaurantImage, address, notes, tags, rating);
+        RestaurantModel restaurantModel = new RestaurantModel(name, address, notes, tags, rating);
         restaurantModels.add(restaurantModel);
         PrefConfig.writeListInPref(getApplicationContext(), restaurantModels);
 

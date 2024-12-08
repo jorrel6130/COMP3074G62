@@ -70,6 +70,7 @@ public class RestaurantInfoActivity extends AppCompatActivity {
             }
         }
 
+
         // Setting text fields using restaurant values
         restaurantName.setText(name);
         restaurantAddress.setText(address);
@@ -104,13 +105,14 @@ public class RestaurantInfoActivity extends AppCompatActivity {
         name = restaurantName.getText().toString();
         description = restaurantNotes.getText().toString();
         address = restaurantAddress.getText().toString();
-        tags = restaurantAddress.getText().toString().trim().split("\\s*,\\s*");
+        tags = restaurantTags.getText().toString().trim().split("\\s*,\\s*");
         rating = restaurantRating.getRating();
 
         // Sets current restaurants details to what was inputted in the EditText fields
         currentRestaurant.setName(name);
         currentRestaurant.setDescription(description);
         currentRestaurant.setAddress(address);
+        currentRestaurant.setTags(tags);
         currentRestaurant.setRating(rating);
 
         // Replaces old current restaurant with modified current restaurant

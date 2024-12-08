@@ -40,7 +40,7 @@ public class RestaurantViewAdapter extends RecyclerView.Adapter<RestaurantViewAd
     @Override
     public void onBindViewHolder(@NonNull RestaurantViewAdapter.MyViewHolder holder, int position) {
 
-        holder.imageView.setImageResource(restaurantModels.get(position).getImage());
+        holder.imageView.setImageResource(R.drawable.rest_symbol);
         holder.restaurantName.setText(restaurantModels.get(position).getName());
     }
 

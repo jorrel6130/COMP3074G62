@@ -1,10 +1,11 @@
 package com.example.personalrestaurantguide;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
 
 public class RestaurantModel {
     String RestaurantName;
-    int image;
     String RestaurantAddress;
     String RestaurantDescription;
     String[] RestaurantTags;
@@ -12,21 +13,29 @@ public class RestaurantModel {
     float RestaurantRating;
 
 
-    public RestaurantModel(String restaurantName, int image, String restaurantAddress, String restaurantDescription, String[] restaurantTags, float restaurantRating) {
+    public RestaurantModel(String restaurantName, String restaurantAddress, String restaurantDescription, String[] restaurantTags, float restaurantRating) {
         RestaurantName = restaurantName;
-        this.image = image;
         this.RestaurantAddress = restaurantAddress;
         this.RestaurantDescription = restaurantDescription;
         this.RestaurantTags = restaurantTags;
         this.RestaurantRating = restaurantRating;
     }
 
-    public String getName() {
-        return RestaurantName;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof RestaurantModel)) return false;
+        RestaurantModel that = (RestaurantModel) o;
+        return Float.compare(RestaurantRating, that.RestaurantRating) == 0 && Objects.equals(RestaurantName, that.RestaurantName) && Objects.equals(RestaurantAddress, that.RestaurantAddress) && Objects.equals(RestaurantDescription, that.RestaurantDescription) && Objects.deepEquals(RestaurantTags, that.RestaurantTags) && Objects.equals(test, that.test);
     }
 
-    public int getImage() {
-        return image;
+    @Override
+    public int hashCode() {
+        return Objects.hash(RestaurantName, RestaurantAddress, RestaurantDescription, Arrays.hashCode(RestaurantTags), test, RestaurantRating);
+    }
+
+    public String getName() {
+        return RestaurantName;
     }
 
     public String getDescription() {
@@ -47,10 +56,6 @@ public class RestaurantModel {
 
     public void setName(String restaurantName) {
         RestaurantName = restaurantName;
-    }
-
-    public void setImage(int image) {
-        this.image = image;
     }
 
     public void setAddress(String restaurantAddress) {

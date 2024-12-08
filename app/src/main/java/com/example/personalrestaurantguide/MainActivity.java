@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -23,14 +24,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements RestaurantInterface {
 
-    // Delcaring variables that will be used in multiple methods outside
+    // Declaring variables that will be used in multiple methods outside
     ArrayList<RestaurantModel> restaurantModels;
+    ArrayList<RestaurantModel> filteredList;
     RestaurantViewAdapter adapter;
     AlertDialog.Builder builder;
     private SearchView searchView;
+    String searchQuery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,11 +60,13 @@ public class MainActivity extends AppCompatActivity implements RestaurantInterfa
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                Toast.makeText(MainActivity.this, searchQuery, Toast.LENGTH_SHORT).show();
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                searchQuery = newText;
                 filterList(newText);
                 return true;
             }
@@ -82,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements RestaurantInterfa
 
     private void filterList(String newText) {
         newText = newText.trim();
-        ArrayList<RestaurantModel> filteredList = new ArrayList<>();
+        filteredList = new ArrayList<>();
         for (RestaurantModel restaurantModel : restaurantModels) {
             if (restaurantModel.getName().trim().toLowerCase().contains(newText.toLowerCase())) {
                 filteredList.add(restaurantModel);
@@ -101,15 +107,17 @@ public class MainActivity extends AppCompatActivity implements RestaurantInterfa
     // Tapping one of the restaurant cards will open their info screen
     @Override
     public void onItemClick(int position) {
+        int realPosition = getRealPosition(position);
         Intent intent = new Intent(MainActivity.this, RestaurantInfoActivity.class);
-        intent.putExtra("position", position); // Pushing position through intent to retrieve data via list in the info activity
+        intent.putExtra("position", realPosition); // Pushing position through intent to retrieve data via list in the info activity
         startActivity(intent);
     }
 
     // Long tap will trigger a dialog for deletion
     @Override
     public void onItemLongClick(int position) {
-        String restName = restaurantModels.get(position).getName();
+        int realPosition = getRealPosition(position);
+        String restName = restaurantModels.get(realPosition).getName();
         builder.setTitle("Delete")
                 .setMessage("Do you want to delete " + restName + "?")
                 .setCancelable(true)
@@ -117,9 +125,9 @@ public class MainActivity extends AppCompatActivity implements RestaurantInterfa
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         // If Yes, restaurant is removed from list and adapter is updated
-                        restaurantModels.remove(position);
+                        restaurantModels.remove(realPosition);
                         PrefConfig.writeListInPref(getApplicationContext(), restaurantModels);
-                        adapter.notifyItemRemoved(position);
+                        adapter.notifyItemRemoved(realPosition);
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -145,5 +153,20 @@ public class MainActivity extends AppCompatActivity implements RestaurantInterfa
             startActivity(intent);
         }
         return true;
+    }
+
+    public int getRealPosition(int position) {
+        int realPosition = position;
+        RestaurantModel currentRestaurant;
+        if (searchQuery != "" && searchQuery != null) {
+            RestaurantModel selectedRestaurant = filteredList.get(position);
+            for (int i = 0; i < (restaurantModels.size()); i++) {
+                currentRestaurant = restaurantModels.get(i);
+                if (selectedRestaurant.equals(currentRestaurant)) {
+                    realPosition = i;
+                }
+            }
+        }
+        return realPosition;
     }
 }
