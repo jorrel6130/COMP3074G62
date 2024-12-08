@@ -47,9 +47,8 @@ public class RestaurantCreationActivity extends AppCompatActivity {
             result -> {
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                     Place place = Autocomplete.getPlaceFromIntent(result.getData());
-                    etRestaurantName.setText(place.getName());
                     etRestaurantAddress.setText(place.getAddress());
-                    Toast.makeText(this, "Place selected: " + place.getName(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Address selected: " + place.getAddress(), Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(this, "Error fetching place", Toast.LENGTH_SHORT).show();
                 }
@@ -66,7 +65,10 @@ public class RestaurantCreationActivity extends AppCompatActivity {
             restaurantModels = new ArrayList<>();
         }
 
-        // Initialize UI
+        // Initialize Google Places API
+        Places.initialize(getApplicationContext(), "AIzaSyAPR_ZNIlI5rt30i6vGz0uVM8lwhQM1OBo");
+
+        // Initialize UI components
         etRestaurantName = findViewById(R.id.etRestaurantName);
         etRestaurantAddress = findViewById(R.id.etRestaurantAddress);
         etRestaurantNotes = findViewById(R.id.etRestaurantNotes);
@@ -75,32 +77,15 @@ public class RestaurantCreationActivity extends AppCompatActivity {
         ImageButton btnBack = findViewById(R.id.btnBack);
         ImageButton btnSave = findViewById(R.id.btnSave);
         Button btnUseCurrentLocation = findViewById(R.id.btnUseCurrentLocation);
-        Button btnChooseImage = findViewById(R.id.btnChooseImage);
         Button btnUseGoogleImage = findViewById(R.id.btnUseGoogleImage);
 
-        Places.initialize(getApplicationContext(), "AIzaSyAPR_ZNIlI5rt30i6vGz0uVM8lwhQM1OBo");
-
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
+        // Set click listeners
         btnBack.setOnClickListener(v -> finish());
         btnSave.setOnClickListener(v -> saveRestaurantDetails());
         btnUseCurrentLocation.setOnClickListener(v -> requestLocationPermission());
-
-        ActivityResultLauncher<Intent> imagePickerLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        Toast.makeText(this, "Image selected successfully", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-        btnChooseImage.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_PICK);
-            intent.setType("image/*");
-            imagePickerLauncher.launch(intent);
-        });
-
         btnUseGoogleImage.setOnClickListener(v -> openAutocompleteIntent());
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
     }
 
     private void saveRestaurantDetails() {
@@ -161,7 +146,7 @@ public class RestaurantCreationActivity extends AppCompatActivity {
     }
 
     private void openAutocompleteIntent() {
-        List<Place.Field> fields = Arrays.asList(Place.Field.NAME, Place.Field.ADDRESS);
+        List<Place.Field> fields = Arrays.asList(Place.Field.ADDRESS);
         Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
                 .build(this);
         autocompleteLauncher.launch(intent);

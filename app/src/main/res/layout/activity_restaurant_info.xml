@@ -48,10 +48,17 @@
         android:textColor="#000000"
         android:backgroundTint="#FFFFFF"
         android:inputType="textPostalAddress"
-        android:autofillHints="addressLine1"
         app:layout_constraintTop_toBottomOf="@id/etRestaurantName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/btnAutocomplete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select Address"
+        app:layout_constraintTop_toBottomOf="@id/etRestaurantAddress"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
         android:id="@+id/etRestaurantNotes"
@@ -62,7 +69,7 @@
         android:backgroundTint="#FFFFFF"
         android:inputType="textMultiLine"
         android:lines="3"
-        app:layout_constraintTop_toBottomOf="@id/etRestaurantAddress"
+        app:layout_constraintTop_toBottomOf="@id/btnAutocomplete"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
