@@ -1,3 +1,6 @@
+// Jorrel Tigbayan
+// 101329925
+
 package com.example.personalrestaurantguide;
 
 import android.content.Context;
@@ -11,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class RestaurantViewAdapter extends RecyclerView.Adapter<RestaurantViewAdapter.MyViewHolder>{
     private final RestaurantInterface restaurantInterface;
@@ -37,7 +41,7 @@ public class RestaurantViewAdapter extends RecyclerView.Adapter<RestaurantViewAd
     public void onBindViewHolder(@NonNull RestaurantViewAdapter.MyViewHolder holder, int position) {
 
         holder.imageView.setImageResource(restaurantModels.get(position).getImage());
-        holder.restaurantName.setText(restaurantModels.get(position).getRestaurantName());
+        holder.restaurantName.setText(restaurantModels.get(position).getName());
     }
 
     @Override
@@ -67,6 +71,25 @@ public class RestaurantViewAdapter extends RecyclerView.Adapter<RestaurantViewAd
                     }
                 }
             });
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    if (restaurantInterface != null) {
+                        int position = getAdapterPosition();
+
+                        if (position != RecyclerView.NO_POSITION) {
+                            restaurantInterface.onItemLongClick(position);
+                        }
+                    }
+                    return true;
+                }
+            });
         }
+    }
+
+    public void setFilteredList(ArrayList<RestaurantModel> filteredList) {
+        this.restaurantModels = filteredList;
+        notifyDataSetChanged();
     }
 }

@@ -1,22 +1,27 @@
 package com.example.personalrestaurantguide;
 
+import java.util.ArrayList;
+
 public class RestaurantModel {
     String RestaurantName;
     int image;
+    String RestaurantAddress;
     String RestaurantDescription;
     String[] RestaurantTags;
-    int RestaurantRating;
+    ArrayList<String> test;
+    float RestaurantRating;
 
 
-    public RestaurantModel(String restaurantName, int image, String restaurantDescription, String[] restaurantTags, int restaurantRating) {
+    public RestaurantModel(String restaurantName, int image, String restaurantAddress, String restaurantDescription, String[] restaurantTags, float restaurantRating) {
         RestaurantName = restaurantName;
         this.image = image;
+        this.RestaurantAddress = restaurantAddress;
         this.RestaurantDescription = restaurantDescription;
         this.RestaurantTags = restaurantTags;
         this.RestaurantRating = restaurantRating;
     }
 
-    public String getRestaurantName() {
+    public String getName() {
         return RestaurantName;
     }
 
@@ -24,15 +29,43 @@ public class RestaurantModel {
         return image;
     }
 
-    public String getRestaurantDescription() {
+    public String getDescription() {
         return RestaurantDescription;
     }
 
-    public String[] getRestaurantTags() {
+    public String[] getTags() {
         return RestaurantTags;
     }
 
-    public int getRestaurantRating() {
+    public float getRating() {
         return RestaurantRating;
+    }
+
+    public String getAddress() {
+        return RestaurantAddress;
+    }
+
+    public void setName(String restaurantName) {
+        RestaurantName = restaurantName;
+    }
+
+    public void setImage(int image) {
+        this.image = image;
+    }
+
+    public void setAddress(String restaurantAddress) {
+        RestaurantAddress = restaurantAddress;
+    }
+
+    public void setDescription(String restaurantDescription) {
+        RestaurantDescription = restaurantDescription;
+    }
+
+    public void setTags(String[] restaurantTags) {
+        RestaurantTags = restaurantTags;
+    }
+
+    public void setRating(float restaurantRating) {
+        RestaurantRating = restaurantRating;
     }
 }

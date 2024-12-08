@@ -1,3 +1,6 @@
+// Gadise Oli
+// 101295074
+
 package com.example.personalrestaurantguide;
 
 import android.content.Intent;

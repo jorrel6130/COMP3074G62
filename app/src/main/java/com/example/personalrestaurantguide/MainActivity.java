@@ -1,10 +1,21 @@
+// Jorrel Tigbayan
+// 101329925
+
 package com.example.personalrestaurantguide;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -15,13 +26,11 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements RestaurantInterface {
 
-    ArrayList<RestaurantModel> restaurantModels = new ArrayList<>();
-
-    int restaurantImage = R.drawable.rest_symbol;
-
-    String[] restaurantTags = getResources().getStringArray(R.array.placeholder_tags);
-
-    int restaurantRating = 0;
+    // Delcaring variables that will be used in multiple methods outside
+    ArrayList<RestaurantModel> restaurantModels;
+    RestaurantViewAdapter adapter;
+    AlertDialog.Builder builder;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,41 +38,112 @@ public class MainActivity extends AppCompatActivity implements RestaurantInterfa
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        RecyclerView recyclerView = findViewById(R.id.restaurantRecyclerView);
+        // Pull restaurant list from SharedPrefs; if none exists then a new one is made.
+        restaurantModels = PrefConfig.readListFromPref(this);
+        if (restaurantModels == null) {
+            restaurantModels = new ArrayList<>();
+        }
 
-        setUpRestaurantModels();
-
-        RestaurantViewAdapter adapter = new RestaurantViewAdapter(this, restaurantModels, this);
-
+        // Setting up RecyclerView
+        RecyclerView recyclerView  = findViewById(R.id.restaurantRecyclerView);
+        adapter = new RestaurantViewAdapter(this, restaurantModels, this);
         recyclerView.setAdapter(adapter);
-
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // Setting up SearchView
+        searchView = findViewById(R.id.searchView);
+        searchView.clearFocus();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filterList(newText);
+                return true;
+            }
+        });
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // Adding toolbar for navigation to create activity
+        Toolbar navbar = findViewById(R.id.navbar);
+        setSupportActionBar(navbar);
+
+        // Instantiating AlertDialog builder for delete function
+        builder = new AlertDialog.Builder(this);
     }
 
-    private void setUpRestaurantModels() {
-        String[] restaurantNames = getResources().getStringArray(R.array.restaurant_names);
-        String[] restaurantDescriptions = getResources().getStringArray(R.array.restaurant_names); // Placeholder; I didn't want to write 10 descriptions
-
-        for (int i = 0; i < restaurantNames.length; i++) {
-            restaurantModels.add(new RestaurantModel(restaurantNames[i], restaurantImage, restaurantDescriptions[i], restaurantTags, restaurantRating));
+    private void filterList(String newText) {
+        newText = newText.trim();
+        ArrayList<RestaurantModel> filteredList = new ArrayList<>();
+        for (RestaurantModel restaurantModel : restaurantModels) {
+            if (restaurantModel.getName().trim().toLowerCase().contains(newText.toLowerCase())) {
+                filteredList.add(restaurantModel);
+                continue;
+            }
+            for (String tagQuery : restaurantModel.getTags()) {
+                if (tagQuery.trim().toLowerCase().contains(newText.toLowerCase())) {
+                    filteredList.add(restaurantModel);
+                }
+            }
         }
+
+        adapter.setFilteredList(filteredList);
     }
 
+    // Tapping one of the restaurant cards will open their info screen
     @Override
     public void onItemClick(int position) {
-        /*
-        Intent intent = new Intent(MainActivity.this, FullPageActivity.class);
+        Intent intent = new Intent(MainActivity.this, RestaurantInfoActivity.class);
+        intent.putExtra("position", position); // Pushing position through intent to retrieve data via list in the info activity
+        startActivity(intent);
+    }
 
-        intent.putExtra("NAME", restaurantModels.get(position).getRestaurantModels().getRestaurantName());
-        intent.putExtra("DESCRIPTION", restaurantModels.get(position).getRestaurantModels().getRestaurantDescription());
-        intent.putExtra("DESCRIPTION", restaurantModels.get(position).getRestaurantModels().getRestaurantTags());
-        intent.putExtra("DESCRIPTION", restaurantModels.get(position).getRestaurantModels().getRestaurantRating());
-        */
+    // Long tap will trigger a dialog for deletion
+    @Override
+    public void onItemLongClick(int position) {
+        String restName = restaurantModels.get(position).getName();
+        builder.setTitle("Delete")
+                .setMessage("Do you want to delete " + restName + "?")
+                .setCancelable(true)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // If Yes, restaurant is removed from list and adapter is updated
+                        restaurantModels.remove(position);
+                        PrefConfig.writeListInPref(getApplicationContext(), restaurantModels);
+                        adapter.notifyItemRemoved(position);
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                })
+                .show();
+    }
+
+    // Inflates navbar with "create restaurant" button
+    public boolean onCreateOptionsMenu (Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    // If create button is tapped, starts creation activity
+    public boolean onOptionsItemSelected (@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.add_icon) {
+            Intent intent = new Intent(this, RestaurantCreationActivity.class);
+            startActivity(intent);
+        }
+        return true;
     }
 }
