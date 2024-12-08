@@ -3,11 +3,9 @@
 
 package com.example.personalrestaurantguide;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.widget.Button;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RatingBar;
@@ -15,16 +13,14 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 
 import java.util.ArrayList;
@@ -37,10 +33,8 @@ public class RestaurantCreationActivity extends AppCompatActivity {
 
     private EditText etRestaurantName, etRestaurantAddress, etRestaurantNotes, etRestaurantTags;
     private RatingBar rbRestaurantRating;
-    private FusedLocationProviderClient fusedLocationClient;
 
     private ArrayList<RestaurantModel> restaurantModels;
-    int restaurantImage = R.drawable.rest_symbol;
 
     private final ActivityResultLauncher<Intent> autocompleteLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -66,7 +60,10 @@ public class RestaurantCreationActivity extends AppCompatActivity {
         }
 
         // Initialize Google Places API
-        Places.initialize(getApplicationContext(), "AIzaSyAPR_ZNIlI5rt30i6vGz0uVM8lwhQM1OBo");
+        Places.initialize(getApplicationContext(), "AIzaSyCR0Zds3TrAoeHuC_AV8uUt1_xCqGTgaG0");
+
+        // Creating Places Client
+        PlacesClient placesClient = Places.createClient(this);
 
         // Initialize UI components
         etRestaurantName = findViewById(R.id.etRestaurantName);
@@ -76,16 +73,35 @@ public class RestaurantCreationActivity extends AppCompatActivity {
         rbRestaurantRating = findViewById(R.id.rbRestaurantRating);
         ImageButton btnBack = findViewById(R.id.btnBack);
         ImageButton btnSave = findViewById(R.id.btnSave);
-        Button btnUseCurrentLocation = findViewById(R.id.btnUseCurrentLocation);
-        Button btnUseGoogleImage = findViewById(R.id.btnUseGoogleImage);
 
         // Set click listeners
         btnBack.setOnClickListener(v -> finish());
         btnSave.setOnClickListener(v -> saveRestaurantDetails());
-        btnUseCurrentLocation.setOnClickListener(v -> requestLocationPermission());
-        btnUseGoogleImage.setOnClickListener(v -> openAutocompleteIntent());
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        // Adds onClickListener for address field that opens the Places Autocomplete Activity
+        etRestaurantAddress.setFocusable(false);
+        etRestaurantAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                List<Place.Field> fieldList = Arrays.asList(Place.Field.ADDRESS,
+                        Place.Field.LAT_LNG, Place.Field.NAME);
+                Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY,
+                        fieldList).build(RestaurantCreationActivity.this);
+                startActivityForResult(intent, 100);
+            }
+        });
+    }
+
+    // After selecting one of the addresses from the ones listed, it is set into the address edit text field
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100 && resultCode == RESULT_OK) {
+            Place place = Autocomplete.getPlaceFromIntent(data);
+            etRestaurantAddress.setText(place.getAddress());
+        }else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+            Toast.makeText(this, "Failed to retrieve address", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void saveRestaurantDetails() {
@@ -109,58 +125,5 @@ public class RestaurantCreationActivity extends AppCompatActivity {
         Intent resultIntent = new Intent(RestaurantCreationActivity.this, MainActivity.class);
         startActivity(resultIntent);
         finish();
-    }
-
-    private void requestLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    LOCATION_PERMISSION_REQUEST_CODE);
-        } else {
-            fetchCurrentLocation();
-        }
-    }
-
-    private void fetchCurrentLocation() {
-        try {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED) {
-                fusedLocationClient.getLastLocation()
-                        .addOnSuccessListener(this, location -> {
-                            if (location != null) {
-                                String currentAddress = "Lat: " + location.getLatitude() + ", Lng: " + location.getLongitude();
-                                etRestaurantAddress.setText(currentAddress);
-                                Toast.makeText(this, "Current location fetched", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(this, "Unable to fetch location", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-            } else {
-                Toast.makeText(this, "Location permission not granted", Toast.LENGTH_SHORT).show();
-            }
-        } catch (SecurityException e) {
-            Toast.makeText(this, "SecurityException: Permission not granted", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        }
-    }
-
-    private void openAutocompleteIntent() {
-        List<Place.Field> fields = Arrays.asList(Place.Field.ADDRESS);
-        Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
-                .build(this);
-        autocompleteLauncher.launch(intent);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                fetchCurrentLocation();
-            } else {
-                Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show();
-            }
-        }
     }
 }
