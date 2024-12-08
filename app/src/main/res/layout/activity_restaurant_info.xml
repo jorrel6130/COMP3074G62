@@ -53,10 +53,10 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
-        android:id="@+id/btnAutocomplete"
+        android:id="@+id/btnMap"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Select Address"
+        android:text="@string/map_button"
         app:layout_constraintTop_toBottomOf="@id/etRestaurantAddress"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -69,7 +69,7 @@
         android:backgroundTint="#FFFFFF"
         android:inputType="textMultiLine"
         android:lines="3"
-        app:layout_constraintTop_toBottomOf="@id/btnAutocomplete"
+        app:layout_constraintTop_toBottomOf="@id/btnMap"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

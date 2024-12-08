@@ -7,6 +7,7 @@
     <string name="hint_address">Address</string>
     <string name="hint_notes">Notes</string>
     <string name="hint_tags">Tags (Separate By Commas)</string>
+    <string name="map_button">Find Restaurant</string>
 
     <string name="add_button">Add Restaurant</string>
 
